@@ -3,6 +3,8 @@ defmodule SimpleAuthWeb.UserController do
 
   alias SimpleAuth.Accounts
 
+  plug :scrub_params, "user" when action in [:create]
+
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
     render(conn, "show.html", user: user)
@@ -14,6 +16,13 @@ defmodule SimpleAuthWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    # TBD
+    case Accounts.create_user(user_params) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "Created user #{user.name}")
+        |> redirect(to: user_path(conn, :show, user))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+    end
   end
 end
