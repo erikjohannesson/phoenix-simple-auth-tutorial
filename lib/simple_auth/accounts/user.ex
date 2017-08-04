@@ -9,6 +9,8 @@ defmodule SimpleAuth.Accounts.User do
     field :is_admin, :boolean, default: false
     field :name, :string
     field :password_hash, :string
+    field :password, :string, virtual: true
+    has_many :posts, SimpleAuth.CMS.Post
 
     timestamps()
   end
