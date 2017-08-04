@@ -15,10 +15,13 @@ defmodule SimpleAuth.Accounts.User do
     timestamps()
   end
 
+@required_fields ~w(email)a
+@optional_fields ~w(name is_admin)a
+
   @doc false
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :name, :password_hash, :is_admin])
-    |> validate_required([:email, :name, :password_hash, :is_admin])
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
   end
 end

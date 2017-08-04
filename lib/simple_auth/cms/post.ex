@@ -12,10 +12,14 @@ defmodule SimpleAuth.CMS.Post do
     timestamps()
   end
 
+@required_fields ~w(title)a
+@optional_fields ~w(body)a
+
   @doc false
   def changeset(%Post{} = post, attrs) do
     post
-    |> cast(attrs, [:title, :body])
-    |> validate_required([:title, :body])
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
+    |> assoc_constraint(:user)
   end
 end
