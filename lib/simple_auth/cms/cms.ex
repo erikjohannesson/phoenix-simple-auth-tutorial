@@ -7,6 +7,7 @@ defmodule SimpleAuth.CMS do
   alias SimpleAuth.Repo
 
   alias SimpleAuth.CMS.Post
+  alias SimpleAuth.Accounts.User
 
   @doc """
   Returns the list of posts.
@@ -19,6 +20,13 @@ defmodule SimpleAuth.CMS do
   """
   def list_posts do
     Repo.all(Post)
+  end
+
+  def list_posts_by_user(%User{} = user) do
+    user
+    |> user_posts
+    |> Repo.all
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -37,6 +45,14 @@ defmodule SimpleAuth.CMS do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
+  def get_user_post(%User{} = user, post_id) do
+    user
+    |> user_posts
+    |> Repo.get(post_id)
+    |> Repo.preload(:user)
+  end
+
+
   @doc """
   Creates a post.
 
@@ -51,6 +67,13 @@ defmodule SimpleAuth.CMS do
   """
   def create_post(attrs \\ %{}) do
     %Post{}
+    |> Post.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_post_by_user(attrs \\ %{}, user) do
+    user
+    |> Ecto.build_assoc(:posts)
     |> Post.changeset(attrs)
     |> Repo.insert()
   end
@@ -101,4 +124,15 @@ defmodule SimpleAuth.CMS do
   def change_post(%Post{} = post) do
     Post.changeset(post, %{})
   end
+
+  def change_post_by_user(%User{} = user) do
+    user
+    |> Ecto.build_assoc(:posts)
+    |> Post.changeset(%{})
+  end
+
+  defp user_posts(%User{} = user) do
+    Ecto.assoc(user, :posts)
+  end
+
 end

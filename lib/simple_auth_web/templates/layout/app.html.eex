@@ -13,11 +13,11 @@
 
   <body>
     <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
+      <div class="header">
+          <ol class="breadcrumb text-right">
             <%= if @current_user do %>
             <li><%= @current_user.email %> (<%= @current_user.id %>)</li>
+            <li><%= link "My posts", to: user_post_path(@conn, :index, @current_user)%></li>
             <li>
               <%= link "Sign out", to: session_path(@conn, :delete), method: "delete" %>
             </li>
@@ -25,10 +25,9 @@
               <li><%= link "Register", to: user_path(@conn, :new) %></li>
               <li><%= link "Sign in", to: session_path(@conn, :new) %></li>
             <% end %>
-          </ul>
-        </nav>
+          </ol>
         <span class="logo"></span>
-      </header>
+      </div>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
