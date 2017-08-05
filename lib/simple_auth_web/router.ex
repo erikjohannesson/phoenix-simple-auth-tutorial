@@ -20,6 +20,7 @@ defmodule SimpleAuthWeb.Router do
   end
 
   pipeline :login_required do
+    plug Guardian.Plug.EnsureAuthenticated, handler: SimpleAuthWeb.GuardianErrorHandler
   end
 
   pipeline :admin_required do

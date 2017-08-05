@@ -42,9 +42,15 @@ defmodule SimpleAuthWeb.PostController do
 
   def edit(conn, %{"id" => id}, current_user) do
     post = CMS.get_user_post(current_user, id)
-    changeset = CMS.change_post(post)
 
-    render(conn, "edit.html", post: post, changeset: changeset)
+    if post do
+      changeset = CMS.change_post(post)
+      render(conn, "edit.html", post: post, changeset: changeset)
+    else
+      conn
+      |> put_status(:not_found)
+      |> render(SimpleAuthWeb.ErrorView, "404.html")
+    end
   end
 
   def update(conn, %{"id" => id, "post" => post_params}, current_user) do
