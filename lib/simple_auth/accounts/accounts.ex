@@ -5,7 +5,6 @@ defmodule SimpleAuth.Accounts do
 
   import Ecto.Query, warn: false
   alias SimpleAuth.Repo
-
   alias SimpleAuth.Accounts.User
 
   @doc """
@@ -101,4 +100,24 @@ defmodule SimpleAuth.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def authenticate_by_email_and_password(email, password) do
+    # try to get user by unique email from DB
+    user = Repo.get_by(User, email: email)
+    # examine the result
+    cond do
+      # if user was found and provided password hash equals to stored hash
+      user && Comeonin.Bcrypt.checkpw(password, user.password_hash) ->
+        {:ok, user}
+      # else if we just found the user
+      user ->
+        {:error, :unauthorized}
+      # otherwise
+      true ->
+        # simulate check password hash timing
+        Comeonin.Bcrypt.dummy_checkpw
+        {:error, :not_found}
+    end
+  end
+
 end

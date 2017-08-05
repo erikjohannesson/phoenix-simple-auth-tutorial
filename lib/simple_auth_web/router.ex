@@ -13,8 +13,14 @@ defmodule SimpleAuthWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :with_session do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+    plug SimpleAuth.CurrentUser
+  end
+
   scope "/", SimpleAuthWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through [:browser, :with_session] # Use the default browser stack
 
     get "/", PageController, :index
 

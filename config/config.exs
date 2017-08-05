@@ -22,6 +22,14 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :guardian, Guardian,
+  issuer: "SimpleAuth.#{Mix.env}",
+  ttl: {30, :days},
+  allowed_drift: 2000,
+  verify_issuer: true,
+  serializer: SimpleAuth.Accounts.GuardianSerializer,
+  secret_key: to_string(Mix.env) <> "thisIsNOTaVERYgoodSecret"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
