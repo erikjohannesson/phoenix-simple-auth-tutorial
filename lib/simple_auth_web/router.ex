@@ -26,7 +26,7 @@ defmodule SimpleAuthWeb.Router do
 
     resources "/users", UserController, only: [:show, :new, :create]
 
-    resources "/sessions", SessionController, only: [:new, :create, :delete]
+    resources "/sessions", SessionController, only: [:new, :create, :delete], singleton: true
   end
 
   # Other scopes may use custom stacks.
