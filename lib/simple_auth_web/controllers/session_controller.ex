@@ -1,7 +1,7 @@
 defmodule SimpleAuthWeb.SessionController do
   use SimpleAuthWeb, :controller
 
-  alias SimpleAuth.Accounts
+  alias SimpleAuthWeb.Auth
 
   def new(conn, _) do
     render(conn, "new.html")
@@ -9,13 +9,12 @@ defmodule SimpleAuthWeb.SessionController do
 
   def create(conn, %{"session" => %{"email" => email,
                                     "password" => password}}) do
-    case Accounts.authenticate_by_email_and_password(email, password) do
-      {:ok, user} ->
+    case Auth.login_by_email_and_password(conn, email, password) do
+      {:ok, conn} ->
         conn
-        |> login(user)
         |> put_flash(:info, "You’re now logged in!")
         |> redirect(to: page_path(conn, :index))
-      {:error, _} ->
+      {:error, _reason, conn} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
@@ -24,18 +23,9 @@ defmodule SimpleAuthWeb.SessionController do
 
   def delete(conn, _) do
     conn
-    |> logout
+    |> Auth.logout
     |> put_flash(:info, "See you later!")
     |> redirect(to: page_path(conn, :index))
-  end
-
-  defp login(conn, user) do
-    conn
-    |> Guardian.Plug.sign_in(user)
-  end
-
-  defp logout(conn) do
-    Guardian.Plug.sign_out(conn)
   end
 
 end
