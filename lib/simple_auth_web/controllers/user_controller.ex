@@ -19,6 +19,7 @@ defmodule SimpleAuthWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
+        |> SimpleAuthWeb.Auth.login(user)
         |> put_flash(:info, "Created user #{user.name}")
         |> redirect(to: user_path(conn, :show, user))
       {:error, %Ecto.Changeset{} = changeset} ->
