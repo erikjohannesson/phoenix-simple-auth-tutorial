@@ -1,5 +1,9 @@
 # SimpleAuth
 
+This repo contains an implementation of [this tutorial](https://medium.com/@andreichernykh/phoenix-simple-authentication-authorization-in-step-by-step-tutorial-form-dc93ea350153) but using Phoenix 1.3
+
+---
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
